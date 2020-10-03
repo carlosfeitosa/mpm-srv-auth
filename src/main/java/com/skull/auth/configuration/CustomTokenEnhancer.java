@@ -10,20 +10,33 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 
 import com.skull.auth.model.CustomUser;
 
+/**
+ * Configuration for custom access token.
+ * 
+ * @author Carlos Feitosa (carlos.feitosa.nt@gmail.com)
+ * @since 2020-10=03
+ *
+ */
 public class CustomTokenEnhancer extends JwtAccessTokenConverter {
 
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+
 		CustomUser user = (CustomUser) authentication.getPrincipal();
 		Map<String, Object> info = new LinkedHashMap<>(accessToken.getAdditionalInformation());
+
 		if (user.getId() != null)
 			info.put("id", user.getId());
+
 		if (user.getName() != null)
 			info.put("name", user.getName());
+
 		if (user.getUsername() != null)
 			info.put("userName", user.getUsername());
+
 		DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
 		customAccessToken.setAdditionalInformation(info);
+
 		return super.enhance(customAccessToken, authentication);
 	}
 }

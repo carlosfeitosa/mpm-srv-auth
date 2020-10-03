@@ -14,13 +14,20 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+/**
+ * Configuration for OAuth2.
+ * 
+ * @author Carlos Feitosa (carlos.feitosa.nt@gmail.com)
+ * @since 2020-10-03
+ *
+ */
 @Configuration
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
-	@Value("${config.oauth2.clientid}")
+	@Value("${security.oauth2.client.id}")
 	private String clientid;
 
-	@Value("${config.oauth2.clientSecret}")
+	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
 
 	@Value("${config.oauth2.privateKey}")
@@ -38,11 +45,13 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+
 		security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
 	}
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+
 		clients.inMemory().withClient(clientid).secret(passwordEncoder.encode(clientSecret)).scopes("read", "write")
 				.authorizedGrantTypes("password", "refresh_token").accessTokenValiditySeconds(3600)
 				.refreshTokenValiditySeconds(18000);
@@ -50,20 +59,24 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+
 		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore())
 				.accessTokenConverter(tokenEnhancer());
 	}
 
 	@Bean
 	public JwtTokenStore tokenStore() {
+
 		return new JwtTokenStore(tokenEnhancer());
 	}
 
 	@Bean
 	public JwtAccessTokenConverter tokenEnhancer() {
+
 		JwtAccessTokenConverter converter = new CustomTokenEnhancer();
 		converter.setSigningKey(privateKey);
 		converter.setVerifierKey(publicKey);
+
 		return converter;
 	}
 

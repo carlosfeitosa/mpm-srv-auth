@@ -15,6 +15,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.skull.auth.service.CustomUserDetailsService;
 
+/**
+ * Configuration for web security.
+ * 
+ * @author Carlos Feitosa (carlos.feitosa.nt@gmail.com)
+ * @since 2020-10-03
+ *
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -26,16 +33,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	@Autowired
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
 		auth.userDetailsService(customUserDetailsService).passwordEncoder(encoder());
 	}
 
 	@Bean
 	public PasswordEncoder encoder() {
+
 		return new BCryptPasswordEncoder();
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+
 		http.authorizeRequests().anyRequest().authenticated().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.NEVER);
 	}
@@ -43,6 +53,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
+
 		return super.authenticationManagerBean();
 	}
 
