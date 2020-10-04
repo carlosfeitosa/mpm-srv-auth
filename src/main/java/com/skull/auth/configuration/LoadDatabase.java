@@ -1,9 +1,11 @@
 package com.skull.auth.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.skull.auth.model.AuthUser;
 import com.skull.auth.repository.AuthUserRepository;
@@ -20,6 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @Slf4j
 public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
+
+	/**
+	 * Password encoder.
+	 */
+	@Autowired
+	PasswordEncoder encoder;
 
 	/**
 	 * Mocker master user name.
@@ -71,7 +79,7 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 		result.setName(MOCKED_MASTER_NAME);
 		result.setEmailId(MOCKED_MASTER_EMAIL);
-		result.setPassword(MOCKED_MASTER_PASSWORD);
+		result.setPassword(encoder.encode(MOCKED_MASTER_PASSWORD));
 
 		return result;
 	}
