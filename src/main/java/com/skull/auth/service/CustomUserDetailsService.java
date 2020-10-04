@@ -10,6 +10,13 @@ import com.skull.auth.dto.AuthUserDto;
 import com.skull.auth.model.AuthUser;
 import com.skull.auth.repository.AuthUserRepository;
 
+/**
+ * Service for auth user entity.
+ * 
+ * @author Carlos Feitosa (carlos.feitosa.nt@gmail.com)
+ * @since 2020-10-04
+ *
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
