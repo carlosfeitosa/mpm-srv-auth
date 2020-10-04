@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
-import com.skull.auth.model.CustomUser;
+import com.skull.auth.dto.AuthUserDto;
 
 /**
  * Configuration for custom access token.
@@ -22,21 +22,26 @@ public class CustomTokenEnhancer extends JwtAccessTokenConverter {
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 
-		CustomUser user = (CustomUser) authentication.getPrincipal();
-		Map<String, Object> info = new LinkedHashMap<>(accessToken.getAdditionalInformation());
+		if (!authentication.isClientOnly()) {
 
-		if (user.getId() != null)
-			info.put("id", user.getId());
+			AuthUserDto user = (AuthUserDto) authentication.getPrincipal();
+			Map<String, Object> info = new LinkedHashMap<>(accessToken.getAdditionalInformation());
 
-		if (user.getName() != null)
-			info.put("name", user.getName());
+			if (user.getId() != null)
+				info.put("id", user.getId());
 
-		if (user.getUsername() != null)
-			info.put("userName", user.getUsername());
+			if (user.getName() != null)
+				info.put("name", user.getName());
 
-		DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
-		customAccessToken.setAdditionalInformation(info);
+			if (user.getUsername() != null)
+				info.put("userName", user.getUsername());
 
-		return super.enhance(customAccessToken, authentication);
+			DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
+			customAccessToken.setAdditionalInformation(info);
+
+			return super.enhance(customAccessToken, authentication);
+		}
+
+		return super.enhance(accessToken, authentication);
 	}
 }

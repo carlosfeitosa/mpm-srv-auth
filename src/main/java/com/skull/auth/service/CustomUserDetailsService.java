@@ -6,31 +6,37 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.skull.auth.dao.OAuthDAOService;
-import com.skull.auth.model.CustomUser;
-import com.skull.auth.model.UserEntity;
+import com.skull.auth.dto.AuthUserDto;
+import com.skull.auth.model.AuthUser;
+import com.skull.auth.repository.AuthUserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+	/**
+	 * User repository.
+	 */
 	@Autowired
-	OAuthDAOService oauthDAOService;
+	AuthUserRepository repo;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		UserEntity userEntity = null;
+		AuthUser user = null;
 
 		try {
-			userEntity = oauthDAOService.getUserDetails(username);
 
-			if (userEntity != null && userEntity.getId() != null && !"".equalsIgnoreCase(userEntity.getId())) {
-				CustomUser customUser = new CustomUser(userEntity);
-				return customUser;
+			user = repo.findByEmailId(username);
+
+			if (user != null && user.getId() != null && !"".equalsIgnoreCase(user.getId().toString())) {
+
+				return new AuthUserDto(user);
 			} else {
+
 				throw new UsernameNotFoundException("User " + username + " was not found in the database");
 			}
 		} catch (Exception e) {
+
 			throw new UsernameNotFoundException("User " + username + " was not found in the database");
 		}
 

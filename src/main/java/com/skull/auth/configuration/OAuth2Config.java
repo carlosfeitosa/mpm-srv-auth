@@ -53,7 +53,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
 		clients.inMemory().withClient(clientid).secret(passwordEncoder.encode(clientSecret)).scopes("read", "write")
-				.authorizedGrantTypes("password", "refresh_token").accessTokenValiditySeconds(3600)
+				.authorizedGrantTypes("client_credentials", "password", "refresh_token").accessTokenValiditySeconds(3600)
 				.refreshTokenValiditySeconds(18000);
 	}
 
