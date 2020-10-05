@@ -10,8 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.skull.auth.model.AuthPermission;
 import com.skull.auth.model.AuthRole;
 import com.skull.auth.model.AuthUser;
+import com.skull.auth.repository.AuthPermissionRepository;
 import com.skull.auth.repository.AuthRoleRepository;
 import com.skull.auth.repository.AuthUserRepository;
 
@@ -39,6 +41,12 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	 */
 	@Autowired
 	AuthRoleRepository roleRepo;
+
+	/**
+	 * Permission repository.
+	 */
+	@Autowired
+	AuthPermissionRepository permissionRepo;
 
 	/**
 	 * Mocker master user name.
@@ -81,6 +89,31 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	private static final String ROLE_DEVTEAM = "ROLE_DEVTEAM";
 
 	/**
+	 * Create project permission.
+	 */
+	private static final String PERMISSION_CREATE_PROJECT = "PERMISSION_CREATE_PROJECT";
+
+	/**
+	 * Edit project permission.
+	 */
+	private static final String PERMISSION_EDIT_PROJECT = "PERMISSION_EDIT_PROJECT";
+
+	/**
+	 * Delete project permission.
+	 */
+	private static final String PERMISSION_DELETE_PROJECT = "PERMISSION_DELETE_PROJECT";
+
+	/**
+	 * View all projects permission.
+	 */
+	private static final String PERMISSION_VIEW_ALL_PROJECT = "PERMISSION_VIEW_ALL_PROJECT";
+
+	/**
+	 * View project permission.
+	 */
+	private static final String PERMISSION_VIEW_PROJECT = "PERMISSION_VIEW_PROJECT";
+
+	/**
 	 * Init database with mock data.
 	 * 
 	 * @param repository   repository used to save information.
@@ -98,6 +131,7 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 				log.info("Preloading database...");
 
 				initRoles();
+				initPermissions();
 
 				log.info("Preloading database (users)...");
 
@@ -106,6 +140,21 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 				repository.save(master);
 			}
 		};
+	}
+
+	/**
+	 * Initialize permissions
+	 */
+	private void initPermissions() {
+
+		log.info("Preloading database (permission)...");
+
+		for (AuthPermission permission : getMockedPermissionList()) {
+
+			log.debug("Saving \"{}\" permission", permission.getName());
+
+			permissionRepo.save(permission);
+		}
 	}
 
 	/**
@@ -121,6 +170,24 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 			roleRepo.save(role);
 		}
+	}
+
+	/**
+	 * Returns a mocked permission list.
+	 * 
+	 * @return mocked permission list
+	 */
+	private List<AuthPermission> getMockedPermissionList() {
+
+		List<AuthPermission> result = new ArrayList<>();
+
+		result.add(new AuthPermission(PERMISSION_CREATE_PROJECT));
+		result.add(new AuthPermission(PERMISSION_EDIT_PROJECT));
+		result.add(new AuthPermission(PERMISSION_DELETE_PROJECT));
+		result.add(new AuthPermission(PERMISSION_VIEW_ALL_PROJECT));
+		result.add(new AuthPermission(PERMISSION_VIEW_PROJECT));
+
+		return result;
 	}
 
 	/**

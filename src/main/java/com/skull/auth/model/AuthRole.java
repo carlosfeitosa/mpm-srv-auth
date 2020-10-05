@@ -1,11 +1,15 @@
 package com.skull.auth.model;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -45,6 +49,13 @@ public class AuthRole {
 	@Getter
 	@Setter
 	private String name;
+
+	/**
+	 * Permissions list.
+	 */
+	@ManyToMany
+	@JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
+	private List<AuthPermission> linkedPermissions;
 
 	/**
 	 * Default constructor.
