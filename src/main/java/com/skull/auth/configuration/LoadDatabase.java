@@ -35,6 +35,12 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	PasswordEncoder encoder;
 
 	/**
+	 * Role repository.
+	 */
+	@Autowired
+	AuthRoleRepository roleRepo;
+
+	/**
 	 * Mocker master user name.
 	 */
 	private static final String MOCKED_MASTER_NAME = "Carlos Feitosa";
@@ -89,6 +95,10 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 			if (initMockedDb) {
 
+				log.info("Preloading database...");
+
+				initRoles();
+
 				log.info("Preloading database (users)...");
 
 				AuthUser master = getMockedMasterUser();
@@ -98,23 +108,19 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 		};
 	}
 
-	@Bean
-	public CommandLineRunner initDatabaseRole(final AuthRoleRepository repository,
-			final @Value("${service.preload.database}") boolean initMockedDb) {
-		return args -> {
+	/**
+	 * Initialize roles.
+	 */
+	private void initRoles() {
 
-			if (initMockedDb) {
+		log.info("Preloading database (role)...");
 
-				log.info("Preloading database (role)...");
+		for (AuthRole role : getMockedRoleList()) {
 
-				for (AuthRole role : getMockedRoleList()) {
+			log.debug("Saving \"{}\" role", role.getName());
 
-					log.debug("Saving \"{}\" role", role.getName());
-
-					repository.save(role);
-				}
-			}
-		};
+			roleRepo.save(role);
+		}
 	}
 
 	/**
