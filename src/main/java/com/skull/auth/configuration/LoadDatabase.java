@@ -1,5 +1,8 @@
 package com.skull.auth.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -7,7 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.skull.auth.model.AuthRole;
 import com.skull.auth.model.AuthUser;
+import com.skull.auth.repository.AuthRoleRepository;
 import com.skull.auth.repository.AuthUserRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +50,31 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	private static final String MOCKED_MASTER_PASSWORD = "s3cr3t";
 
 	/**
+	 * Root role name.
+	 */
+	private static final String ROLE_ROOT = "ROLE_ROOT";
+
+	/**
+	 * Admin role name.
+	 */
+	private static final String ROLE_ADMIN = "ROLE_ADMIN";
+
+	/**
+	 * Project manager role name.
+	 */
+	private static final String ROLE_PM = "ROLE_PM";
+
+	/**
+	 * PMO role name.
+	 */
+	private static final String ROLE_PMO = "ROLE_PMO";
+
+	/**
+	 * DevTeam role name.
+	 */
+	private static final String ROLE_DEVTEAM = "ROLE_DEVTEAM";
+
+	/**
 	 * Init database with mock data.
 	 * 
 	 * @param repository   repository used to save information.
@@ -53,13 +83,13 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	 * @return args
 	 */
 	@Bean
-	public CommandLineRunner initDatabase(final AuthUserRepository repository,
+	public CommandLineRunner initDatabaseUser(final AuthUserRepository repository,
 			final @Value("${service.preload.database}") boolean initMockedDb) {
 		return args -> {
 
 			if (initMockedDb) {
 
-				log.info("Preloading database...");
+				log.info("Preloading database (users)...");
 
 				AuthUser master = getMockedMasterUser();
 
@@ -68,8 +98,45 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 		};
 	}
 
+	@Bean
+	public CommandLineRunner initDatabaseRole(final AuthRoleRepository repository,
+			final @Value("${service.preload.database}") boolean initMockedDb) {
+		return args -> {
+
+			if (initMockedDb) {
+
+				log.info("Preloading database (role)...");
+
+				for (AuthRole role : getMockedRoleList()) {
+
+					log.debug("Saving \"{}\" role", role.getName());
+
+					repository.save(role);
+				}
+			}
+		};
+	}
+
 	/**
-	 * Returns a mocker master user.
+	 * Returns a mocked role list.
+	 * 
+	 * @return mocked role list
+	 */
+	private List<AuthRole> getMockedRoleList() {
+
+		List<AuthRole> result = new ArrayList<>();
+
+		result.add(new AuthRole(ROLE_ROOT));
+		result.add(new AuthRole(ROLE_ADMIN));
+		result.add(new AuthRole(ROLE_PM));
+		result.add(new AuthRole(ROLE_PMO));
+		result.add(new AuthRole(ROLE_DEVTEAM));
+
+		return result;
+	}
+
+	/**
+	 * Returns a mocked master user.
 	 * 
 	 * @return mocked master user
 	 */
