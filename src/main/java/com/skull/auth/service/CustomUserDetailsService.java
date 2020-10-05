@@ -21,13 +21,18 @@ import com.skull.auth.repository.AuthUserRepository;
 public class CustomUserDetailsService implements UserDetailsService {
 
 	/**
+	 * Message for user not found exception.
+	 */
+	private static final String USER_NOT_FOUND_MSG = "User \"%s\" was not found in the database";
+
+	/**
 	 * User repository.
 	 */
 	@Autowired
 	AuthUserRepository repo;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) {
 
 		AuthUser user = null;
 
@@ -40,11 +45,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 				return new AuthUserDto(user);
 			} else {
 
-				throw new UsernameNotFoundException("User " + username + " was not found in the database");
+				throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username));
 			}
 		} catch (Exception e) {
 
-			throw new UsernameNotFoundException("User " + username + " was not found in the database");
+			throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username));
 		}
 
 	}
