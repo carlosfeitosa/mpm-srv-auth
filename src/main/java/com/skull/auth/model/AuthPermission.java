@@ -52,6 +52,8 @@ public class AuthPermission {
 	 * Role list.
 	 */
 	@ManyToMany(mappedBy = "linkedPermissions")
+	@Getter
+	@Setter
 	private List<AuthRole> linkedRoles;
 
 	/**

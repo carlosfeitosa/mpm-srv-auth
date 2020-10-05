@@ -130,12 +130,13 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 				log.info("Preloading database...");
 
-				initRoles();
-				initPermissions();
+				List<AuthRole> allRolesList = initRoles();
 
 				log.info("Preloading database (users)...");
 
 				AuthUser master = getMockedMasterUser();
+
+				master.setLinkedRoles(allRolesList);
 
 				repository.save(master);
 			}
@@ -143,49 +144,20 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	}
 
 	/**
-	 * Initialize permissions
-	 */
-	private void initPermissions() {
-
-		log.info("Preloading database (permission)...");
-
-		for (AuthPermission permission : getMockedPermissionList()) {
-
-			log.debug("Saving \"{}\" permission", permission.getName());
-
-			permissionRepo.save(permission);
-		}
-	}
-
-	/**
 	 * Initialize roles.
 	 */
-	private void initRoles() {
+	private List<AuthRole> initRoles() {
+
+		List<AuthRole> result = getMockedRoleList();
 
 		log.info("Preloading database (role)...");
 
-		for (AuthRole role : getMockedRoleList()) {
+		for (AuthRole role : result) {
 
 			log.debug("Saving \"{}\" role", role.getName());
 
 			roleRepo.save(role);
 		}
-	}
-
-	/**
-	 * Returns a mocked permission list.
-	 * 
-	 * @return mocked permission list
-	 */
-	private List<AuthPermission> getMockedPermissionList() {
-
-		List<AuthPermission> result = new ArrayList<>();
-
-		result.add(new AuthPermission(PERMISSION_CREATE_PROJECT));
-		result.add(new AuthPermission(PERMISSION_EDIT_PROJECT));
-		result.add(new AuthPermission(PERMISSION_DELETE_PROJECT));
-		result.add(new AuthPermission(PERMISSION_VIEW_ALL_PROJECT));
-		result.add(new AuthPermission(PERMISSION_VIEW_PROJECT));
 
 		return result;
 	}
@@ -199,11 +171,64 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 		List<AuthRole> result = new ArrayList<>();
 
-		result.add(new AuthRole(ROLE_ROOT));
-		result.add(new AuthRole(ROLE_ADMIN));
-		result.add(new AuthRole(ROLE_PM));
-		result.add(new AuthRole(ROLE_PMO));
-		result.add(new AuthRole(ROLE_DEVTEAM));
+		List<AuthPermission> projectAllPermissions = getMockedProjectAllPermissionList();
+
+		log.info("Saving project permissions");
+
+		for (AuthPermission permission : projectAllPermissions) {
+
+			log.debug("Saving \"{}\" profile", permission.getName());
+
+			permissionRepo.save(permission);
+		}
+
+		List<AuthPermission> rootPermissions = new ArrayList<>();
+		List<AuthPermission> adminPermissions = new ArrayList<>();
+		List<AuthPermission> pmPermissions = new ArrayList<>();
+		List<AuthPermission> pmoPermissions = new ArrayList<>();
+		List<AuthPermission> devteamPermissions = new ArrayList<>();
+
+		rootPermissions.addAll(projectAllPermissions);
+		adminPermissions.addAll(projectAllPermissions);
+		pmPermissions.addAll(projectAllPermissions);
+		pmoPermissions.addAll(projectAllPermissions);
+		devteamPermissions.addAll(projectAllPermissions);
+
+		AuthRole rootRole = new AuthRole(ROLE_ROOT);
+		AuthRole adminRole = new AuthRole(ROLE_ADMIN);
+		AuthRole pmRole = new AuthRole(ROLE_PM);
+		AuthRole pmoRole = new AuthRole(ROLE_PMO);
+		AuthRole devteamRole = new AuthRole(ROLE_DEVTEAM);
+
+		rootRole.setLinkedPermissions(rootPermissions);
+		adminRole.setLinkedPermissions(pmPermissions);
+		pmRole.setLinkedPermissions(pmPermissions);
+		pmoRole.setLinkedPermissions(pmoPermissions);
+		devteamRole.setLinkedPermissions(devteamPermissions);
+
+		result.add(rootRole);
+		result.add(adminRole);
+		result.add(pmRole);
+		result.add(pmoRole);
+		result.add(devteamRole);
+
+		return result;
+	}
+
+	/**
+	 * Returns a mocked permission list.
+	 * 
+	 * @return mocked permission list
+	 */
+	private List<AuthPermission> getMockedProjectAllPermissionList() {
+
+		List<AuthPermission> result = new ArrayList<>();
+
+		result.add(new AuthPermission(PERMISSION_CREATE_PROJECT));
+		result.add(new AuthPermission(PERMISSION_EDIT_PROJECT));
+		result.add(new AuthPermission(PERMISSION_DELETE_PROJECT));
+		result.add(new AuthPermission(PERMISSION_VIEW_ALL_PROJECT));
+		result.add(new AuthPermission(PERMISSION_VIEW_PROJECT));
 
 		return result;
 	}

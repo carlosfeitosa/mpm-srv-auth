@@ -1,7 +1,8 @@
 package com.skull.auth.dto;
 
-import java.util.ArrayList;
+import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import com.skull.auth.model.AuthUser;
@@ -35,9 +36,10 @@ public class AuthUserDto extends User {
 	 */
 	private String name;
 
-	public AuthUserDto(AuthUser userEntity) {
+	public AuthUserDto(AuthUser userEntity, List<GrantedAuthority> authorizedRoles) {
 
-		super(userEntity.getEmailId(), userEntity.getPassword(), new ArrayList<>());
+		super(userEntity.getEmailId(), userEntity.getPassword(), authorizedRoles);
+
 		this.id = userEntity.getId().toString();
 		this.name = userEntity.getName();
 	}

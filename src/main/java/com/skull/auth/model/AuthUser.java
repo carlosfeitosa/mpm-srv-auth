@@ -1,11 +1,16 @@
 package com.skull.auth.model;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -65,10 +70,11 @@ public class AuthUser {
 	private String password;
 
 	/**
-	 * User's authorities list.
+	 * Roles list
 	 */
-//	@Getter
-//	@Setter
-//	@Transient
-//	private Collection<GrantedAuthority> grantedAuthoritiesList = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@Getter
+	@Setter
+	private List<AuthRole> linkedRoles;
 }

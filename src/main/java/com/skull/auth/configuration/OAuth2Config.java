@@ -24,21 +24,39 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @Configuration
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
+	/**
+	 * Client's id.
+	 */
 	@Value("${security.oauth2.client.id}")
 	private String clientid;
 
+	/**
+	 * Client's secret.
+	 */
 	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
 
+	/**
+	 * Private key.
+	 */
 	@Value("${security.oauth2.privateKey}")
 	private String privateKey;
 
+	/**
+	 * Public key.
+	 */
 	@Value("${security.oauth2.publicKey}")
 	private String publicKey;
 
+	/**
+	 * Password encoder.
+	 */
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
+	/**
+	 * Authentication bean.
+	 */
 	@Autowired
 	@Qualifier("authenticationManagerBean")
 	private AuthenticationManager authenticationManager;
@@ -53,8 +71,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
 		clients.inMemory().withClient(clientid).secret(passwordEncoder.encode(clientSecret)).scopes("read", "write")
-				.authorizedGrantTypes("client_credentials", "password", "refresh_token").accessTokenValiditySeconds(3600)
-				.refreshTokenValiditySeconds(18000);
+				.authorizedGrantTypes("client_credentials", "password", "refresh_token")
+				.accessTokenValiditySeconds(3600).refreshTokenValiditySeconds(18000);
 	}
 
 	@Override

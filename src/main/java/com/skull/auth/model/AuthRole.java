@@ -55,7 +55,17 @@ public class AuthRole {
 	 */
 	@ManyToMany
 	@JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
+	@Getter
+	@Setter
 	private List<AuthPermission> linkedPermissions;
+	
+	/**
+	 * User list.
+	 */
+	@ManyToMany(mappedBy = "linkedRoles")
+	@Getter
+	@Setter
+	private List<AuthUser> linkedUsers;
 
 	/**
 	 * Default constructor.

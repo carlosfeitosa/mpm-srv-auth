@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.skull.auth.converter.AuthRoleConverter;
 import com.skull.auth.dto.AuthUserDto;
 import com.skull.auth.model.AuthUser;
 import com.skull.auth.repository.AuthUserRepository;
@@ -31,6 +32,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Autowired
 	AuthUserRepository repo;
 
+	@Autowired
+	AuthRoleConverter authRoleConverter;
+
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 
@@ -42,7 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 			if (user != null && user.getId() != null && !"".equalsIgnoreCase(user.getId().toString())) {
 
-				return new AuthUserDto(user);
+				return new AuthUserDto(user, authRoleConverter.convertFromRoleList(user.getLinkedRoles()));
 			} else {
 
 				throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username));
