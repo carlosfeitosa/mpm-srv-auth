@@ -24,6 +24,7 @@ class AuthRoleTest {
 
 		role.setName(ROLE_NAME);
 		role.setLinkedPermissions(null);
+		role.setLinkedUsers(null);
 
 		String roleString = role.toString();
 
