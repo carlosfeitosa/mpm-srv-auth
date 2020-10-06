@@ -8,6 +8,8 @@ class MpmSrvAuthApplicationTests {
 
 	@Test
 	void contextLoads() {
+
+		MpmSrvAuthApplication.main(new String[] {});
 	}
 
 }

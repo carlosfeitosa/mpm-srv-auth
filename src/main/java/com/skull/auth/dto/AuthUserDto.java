@@ -40,7 +40,9 @@ public class AuthUserDto extends User {
 
 		super(userEntity.getEmailId(), userEntity.getPassword(), authorizedRoles);
 
-		this.id = userEntity.getId().toString();
 		this.name = userEntity.getName();
+
+		if (null != userEntity.getId())
+			this.id = userEntity.getId().toString();
 	}
 }
