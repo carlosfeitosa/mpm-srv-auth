@@ -60,7 +60,7 @@ public class CustomUserDetailsService implements UserDetailsService { // NOPMD b
 
 			log.info("User found");
 
-			return new AuthUserDto(user, authRoleConverter.convertFromRoleList(user.getLinkedRoles()));
+			return new AuthUserDto(user, authRoleConverter.convertFromRoleListToPermissionList(user.getLinkedRoles()));
 		}
 	}
 }

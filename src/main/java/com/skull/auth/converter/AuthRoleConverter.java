@@ -30,7 +30,7 @@ public class AuthRoleConverter { // NOPMD by skull on 10/11/20, 12:32 AM
 	 * 
 	 * @return GrantedAuthority converted list
 	 */
-	public List<GrantedAuthority> convertFromRoleList(final List<AuthRole> roles) {
+	public List<GrantedAuthority> convertFromRoleListToPermissionList(final List<AuthRole> roles) {
 
 		final List<GrantedAuthority> result = new ArrayList<>();
 
@@ -40,11 +40,15 @@ public class AuthRoleConverter { // NOPMD by skull on 10/11/20, 12:32 AM
 
 			log.debug("Recuperando role {}", role.getName());
 
-			for (final AuthPermission permission : role.getLinkedPermissions()) {
+			if (null != role.getLinkedPermissions()) {
 
-				log.debug("Recuperando a permissão {}", permission.getName());
+				for (final AuthPermission permission : role.getLinkedPermissions()) {
 
-				result.add(new SimpleGrantedAuthority(permission.getName())); // NOPMD by skull on 10/11/20, 12:35 AM
+					log.debug("Recuperando a permissão {}", permission.getName());
+
+					result.add(new SimpleGrantedAuthority(permission.getName())); // NOPMD by skull on 10/11/20, 12:35
+																					// AM
+				}
 			}
 		}
 
