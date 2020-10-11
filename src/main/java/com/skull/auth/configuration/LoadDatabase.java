@@ -34,34 +34,34 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	 * Password encoder.
 	 */
 	@Autowired
-	PasswordEncoder encoder;
+	private PasswordEncoder encoder; // NOPMD by skull on 10/10/20, 11:51 PM
 
 	/**
 	 * Role repository.
 	 */
 	@Autowired
-	AuthRoleRepository roleRepo;
+	private AuthRoleRepository roleRepo; // NOPMD by skull on 10/10/20, 11:51 PM
 
 	/**
 	 * Permission repository.
 	 */
 	@Autowired
-	AuthPermissionRepository permissionRepo;
+	private AuthPermissionRepository permissionRepo; // NOPMD by skull on 10/10/20, 11:51 PM
 
 	/**
 	 * Mocker master user name.
 	 */
-	private static final String MOCKED_MASTER_NAME = "Carlos Feitosa";
+	private static final String MCKD_MASTER_NAME = "Carlos Feitosa";
 
 	/**
 	 * Mocker master user email.
 	 */
-	private static final String MOCKED_MASTER_EMAIL = "carlos.feitosa.nt@gmail.com";
+	private static final String MCKD_MASTER_EMAIL = "carlos.feitosa.nt@gmail.com";
 
 	/**
 	 * Mocker master user password.
 	 */
-	private static final String MOCKED_MASTER_PASSWORD = "s3cr3t";
+	private static final String MCKD_MASTER_PASS = "s3cr3t";
 
 	/**
 	 * Root role name.
@@ -91,27 +91,27 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	/**
 	 * Create project permission.
 	 */
-	private static final String PERMISSION_CREATE_PROJECT = "PERMISSION_CREATE_PROJECT";
+	private static final String PERM_NEW_PROJECT = "PERMISSION_NEW_PROJECT";
 
 	/**
 	 * Edit project permission.
 	 */
-	private static final String PERMISSION_EDIT_PROJECT = "PERMISSION_EDIT_PROJECT";
+	private static final String PERM_EDIT_PROJECT = "PERMISSION_EDIT_PROJECT";
 
 	/**
 	 * Delete project permission.
 	 */
-	private static final String PERMISSION_DELETE_PROJECT = "PERMISSION_DELETE_PROJECT";
+	private static final String PERM_DEL_PROJECT = "PERMISSION_DELETE_PROJECT";
 
 	/**
 	 * View all projects permission.
 	 */
-	private static final String PERMISSION_VIEW_ALL_PROJECT = "PERMISSION_VIEW_ALL_PROJECT";
+	private static final String PERM_VALL_PROJECT = "PERMISSION_VIEW_ALL_PROJECT";
 
 	/**
 	 * View project permission.
 	 */
-	private static final String PERMISSION_VIEW_PROJECT = "PERMISSION_VIEW_PROJECT";
+	private static final String PERM_VIEW_PROJECT = "PERMISSION_VIEW_PROJECT";
 
 	/**
 	 * Init database with mock data.
@@ -130,11 +130,11 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 				log.info("Preloading database...");
 
-				List<AuthRole> allRolesList = initRoles();
+				final List<AuthRole> allRolesList = initRoles();
 
 				log.info("Preloading database (users)...");
 
-				AuthUser master = getMockedMasterUser();
+				final AuthUser master = getMockedMasterUser();
 
 				master.setLinkedRoles(allRolesList);
 
@@ -148,11 +148,11 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	 */
 	private List<AuthRole> initRoles() {
 
-		List<AuthRole> result = getMockedRoleList();
+		final List<AuthRole> result = getMockedRoleList();
 
 		log.info("Preloading database (role)...");
 
-		for (AuthRole role : result) {
+		for (final AuthRole role : result) {
 
 			log.debug("Saving \"{}\" role", role.getName());
 
@@ -169,42 +169,42 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	 */
 	private List<AuthRole> getMockedRoleList() {
 
-		List<AuthRole> result = new ArrayList<>();
+		final List<AuthRole> result = new ArrayList<>();
 
-		List<AuthPermission> projectAllPermissions = getMockedProjectAllPermissionList();
+		final List<AuthPermission> projectPerms = getMockedProjectAllPermissionList();
 
 		log.info("Saving project permissions");
 
-		for (AuthPermission permission : projectAllPermissions) {
+		for (final AuthPermission permission : projectPerms) {
 
 			log.debug("Saving \"{}\" profile", permission.getName());
 
 			permissionRepo.save(permission);
 		}
 
-		List<AuthPermission> rootPermissions = new ArrayList<>();
-		List<AuthPermission> adminPermissions = new ArrayList<>();
-		List<AuthPermission> pmPermissions = new ArrayList<>();
-		List<AuthPermission> pmoPermissions = new ArrayList<>();
-		List<AuthPermission> devteamPermissions = new ArrayList<>();
+		final List<AuthPermission> rootPerms = new ArrayList<>();
+		final List<AuthPermission> adminPerms = new ArrayList<>();
+		final List<AuthPermission> pmPerms = new ArrayList<>();
+		final List<AuthPermission> pmoPerms = new ArrayList<>();
+		final List<AuthPermission> devteamPerms = new ArrayList<>();
 
-		rootPermissions.addAll(projectAllPermissions);
-		adminPermissions.addAll(projectAllPermissions);
-		pmPermissions.addAll(projectAllPermissions);
-		pmoPermissions.addAll(projectAllPermissions);
-		devteamPermissions.addAll(projectAllPermissions);
+		rootPerms.addAll(projectPerms);
+		adminPerms.addAll(projectPerms);
+		pmPerms.addAll(projectPerms);
+		pmoPerms.addAll(projectPerms);
+		devteamPerms.addAll(projectPerms);
 
-		AuthRole rootRole = new AuthRole(ROLE_ROOT);
-		AuthRole adminRole = new AuthRole(ROLE_ADMIN);
-		AuthRole pmRole = new AuthRole(ROLE_PM);
-		AuthRole pmoRole = new AuthRole(ROLE_PMO);
-		AuthRole devteamRole = new AuthRole(ROLE_DEVTEAM);
+		final AuthRole rootRole = new AuthRole(ROLE_ROOT);
+		final AuthRole adminRole = new AuthRole(ROLE_ADMIN);
+		final AuthRole pmRole = new AuthRole(ROLE_PM);
+		final AuthRole pmoRole = new AuthRole(ROLE_PMO);
+		final AuthRole devteamRole = new AuthRole(ROLE_DEVTEAM);
 
-		rootRole.setLinkedPermissions(rootPermissions);
-		adminRole.setLinkedPermissions(pmPermissions);
-		pmRole.setLinkedPermissions(pmPermissions);
-		pmoRole.setLinkedPermissions(pmoPermissions);
-		devteamRole.setLinkedPermissions(devteamPermissions);
+		rootRole.setLinkedPermissions(rootPerms);
+		adminRole.setLinkedPermissions(pmPerms);
+		pmRole.setLinkedPermissions(pmPerms);
+		pmoRole.setLinkedPermissions(pmoPerms);
+		devteamRole.setLinkedPermissions(devteamPerms);
 
 		result.add(rootRole);
 		result.add(adminRole);
@@ -222,13 +222,13 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	 */
 	private List<AuthPermission> getMockedProjectAllPermissionList() {
 
-		List<AuthPermission> result = new ArrayList<>();
+		final List<AuthPermission> result = new ArrayList<>();
 
-		result.add(new AuthPermission(PERMISSION_CREATE_PROJECT));
-		result.add(new AuthPermission(PERMISSION_EDIT_PROJECT));
-		result.add(new AuthPermission(PERMISSION_DELETE_PROJECT));
-		result.add(new AuthPermission(PERMISSION_VIEW_ALL_PROJECT));
-		result.add(new AuthPermission(PERMISSION_VIEW_PROJECT));
+		result.add(new AuthPermission(PERM_NEW_PROJECT));
+		result.add(new AuthPermission(PERM_EDIT_PROJECT));
+		result.add(new AuthPermission(PERM_DEL_PROJECT));
+		result.add(new AuthPermission(PERM_VALL_PROJECT));
+		result.add(new AuthPermission(PERM_VIEW_PROJECT));
 
 		return result;
 	}
@@ -240,11 +240,11 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	 */
 	private AuthUser getMockedMasterUser() {
 
-		AuthUser result = new AuthUser();
+		final AuthUser result = new AuthUser();
 
-		result.setName(MOCKED_MASTER_NAME);
-		result.setEmailId(MOCKED_MASTER_EMAIL);
-		result.setPassword(encoder.encode(MOCKED_MASTER_PASSWORD));
+		result.setName(MCKD_MASTER_NAME);
+		result.setEmailId(MCKD_MASTER_EMAIL);
+		result.setPassword(encoder.encode(MCKD_MASTER_PASS));
 
 		return result;
 	}

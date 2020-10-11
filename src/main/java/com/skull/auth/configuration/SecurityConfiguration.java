@@ -25,18 +25,26 @@ import com.skull.auth.service.CustomUserDetailsService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter { // NOPMD by skull on 10/11/20, 12:24 AM
 
+	/**
+	 * Custom user defails service.
+	 */
 	@Autowired
-	CustomUserDetailsService customUserDetailsService;
+	private CustomUserDetailsService customUserDetailsService; // NOPMD by skull on 10/11/20, 12:25 AM
 
 	@Override
 	@Autowired
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 
-		auth.userDetailsService(customUserDetailsService).passwordEncoder(encoder());
+		auth.userDetailsService(customUserDetailsService).passwordEncoder(encoder()); // NOPMD by skull on 10/11/20, 12:31 AM
 	}
 
+	/**
+	 * Password encoder.
+	 * 
+	 * @return password encoder
+	 */
 	@Bean
 	public PasswordEncoder encoder() {
 
@@ -44,9 +52,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	protected void configure(final HttpSecurity http) throws Exception {
 
-		http.authorizeRequests().anyRequest().authenticated().and().sessionManagement()
+		http.authorizeRequests().anyRequest().authenticated().and().sessionManagement() // NOPMD by skull on 10/11/20,
+																						// 12:27 AM
 				.sessionCreationPolicy(SessionCreationPolicy.NEVER);
 	}
 

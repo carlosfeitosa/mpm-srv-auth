@@ -20,19 +20,26 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-public class AuthRoleConverter {
+public class AuthRoleConverter { // NOPMD by skull on 10/11/20, 12:32 AM
 
-	public List<GrantedAuthority> convertFromRoleList(List<AuthRole> roles) {
+	/**
+	 * Convert a AuthRole list to GrantedAuthority list.
+	 * 
+	 * @param roles AuthRole entity
+	 * 
+	 * @return GrantedAuthority converted list
+	 */
+	public List<GrantedAuthority> convertFromRoleList(final List<AuthRole> roles) {
 
-		List<GrantedAuthority> result = new ArrayList<>();
+		final List<GrantedAuthority> result = new ArrayList<>();
 
 		log.info("Converting from Role list to GranthedAuthority list");
 
-		for (AuthRole role : roles) {
+		for (final AuthRole role : roles) {
 
 			log.debug("Recuperando role {}", role.getName());
 
-			result.add(new SimpleGrantedAuthority(role.getName()));
+			result.add(new SimpleGrantedAuthority(role.getName())); // NOPMD by skull on 10/11/20, 12:35 AM
 		}
 
 		return result;

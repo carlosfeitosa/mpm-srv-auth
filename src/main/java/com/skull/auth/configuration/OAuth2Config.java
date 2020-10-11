@@ -22,76 +22,97 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
  *
  */
 @Configuration
-public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
+public class OAuth2Config extends AuthorizationServerConfigurerAdapter { // NOPMD by skull on 10/11/20, 12:09 AM
 
 	/**
 	 * Client's id.
 	 */
 	@Value("${security.oauth2.client.id}")
-	private String clientid;
+	private String clientid; // NOPMD by skull on 10/11/20, 12:09 AM
 
 	/**
 	 * Client's secret.
 	 */
 	@Value("${security.oauth2.client.client-secret}")
-	private String clientSecret;
+	private String clientSecret; // NOPMD by skull on 10/11/20, 12:09 AM
 
 	/**
 	 * Private key.
 	 */
 	@Value("${security.oauth2.privateKey}")
-	private String privateKey;
+	private String privateKey; // NOPMD by skull on 10/11/20, 12:09 AM
 
 	/**
 	 * Public key.
 	 */
 	@Value("${security.oauth2.publicKey}")
-	private String publicKey;
+	private String publicKey; // NOPMD by skull on 10/11/20, 12:09 AM
 
 	/**
 	 * Password encoder.
 	 */
 	@Autowired
-	PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder; // NOPMD by skull on 10/11/20, 12:09 AM
 
 	/**
 	 * Authentication bean.
 	 */
 	@Autowired
 	@Qualifier("authenticationManagerBean")
-	private AuthenticationManager authenticationManager;
+	private AuthenticationManager authenticationManager; // NOPMD by skull on 10/11/20, 12:09 AM
+
+	/**
+	 * Default access token validity seconds.
+	 */
+	private static final int VALIDITY_SECS = 3600;
+
+	/**
+	 * Default refresh token validity seconds.
+	 */
+	private static final int REFRESH_SECS = 18_000;
 
 	@Override
-	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+	public void configure(final AuthorizationServerSecurityConfigurer security) throws Exception {
 
-		security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
+		security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()"); // NOPMD by skull on 10/11/20, 12:23 AM
 	}
 
 	@Override
-	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+	public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
 
-		clients.inMemory().withClient(clientid).secret(passwordEncoder.encode(clientSecret)).scopes("read", "write")
+		clients.inMemory().withClient(clientid).secret(passwordEncoder.encode(clientSecret)).scopes("read", "write") // NOPMD by skull on 10/11/20, 12:23 AM
 				.authorizedGrantTypes("client_credentials", "password", "refresh_token")
-				.accessTokenValiditySeconds(3600).refreshTokenValiditySeconds(18000);
+				.accessTokenValiditySeconds(VALIDITY_SECS).refreshTokenValiditySeconds(REFRESH_SECS);
 	}
 
 	@Override
-	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+	public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 
-		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore())
+		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore()) // NOPMD by skull on 10/11/20, 12:23 AM
 				.accessTokenConverter(tokenEnhancer());
 	}
 
+	/**
+	 * Token store.
+	 * 
+	 * @return JWT token store
+	 */
 	@Bean
 	public JwtTokenStore tokenStore() {
 
 		return new JwtTokenStore(tokenEnhancer());
 	}
 
+	/**
+	 * Token converter.
+	 * 
+	 * @return JWT access token converter
+	 */
 	@Bean
 	public JwtAccessTokenConverter tokenEnhancer() {
 
-		JwtAccessTokenConverter converter = new CustomTokenEnhancer();
+		final JwtAccessTokenConverter converter = new CustomTokenEnhancer();
+
 		converter.setSigningKey(privateKey);
 		converter.setVerifierKey(publicKey);
 
