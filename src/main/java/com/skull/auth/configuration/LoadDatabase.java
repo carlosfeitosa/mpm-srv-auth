@@ -218,7 +218,7 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 		for (final AuthPermission permission : permissions) {
 
-			if (permission.getName() == PERM_VALL_PROJECT) {
+			if (permission.getName().equals(PERM_VALL_PROJECT)) {
 
 				permissions.remove(permission);
 			}

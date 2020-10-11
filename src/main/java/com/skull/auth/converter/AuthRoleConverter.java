@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.skull.auth.model.AuthPermission;
 import com.skull.auth.model.AuthRole;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,12 @@ public class AuthRoleConverter { // NOPMD by skull on 10/11/20, 12:32 AM
 
 			log.debug("Recuperando role {}", role.getName());
 
-			result.add(new SimpleGrantedAuthority(role.getName())); // NOPMD by skull on 10/11/20, 12:35 AM
+			for (final AuthPermission permission : role.getLinkedPermissions()) {
+
+				log.debug("Recuperando a permissão {}", permission.getName());
+
+				result.add(new SimpleGrantedAuthority(permission.getName())); // NOPMD by skull on 10/11/20, 12:35 AM
+			}
 		}
 
 		return result;
