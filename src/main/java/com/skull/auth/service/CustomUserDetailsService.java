@@ -11,6 +11,8 @@ import com.skull.auth.dto.AuthUserDto;
 import com.skull.auth.model.AuthUser;
 import com.skull.auth.repository.AuthUserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Service for auth user entity.
  * 
@@ -19,41 +21,46 @@ import com.skull.auth.repository.AuthUserRepository;
  *
  */
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+@Slf4j
+public class CustomUserDetailsService implements UserDetailsService { // NOPMD by skull on 10/11/20, 9:07 AM
 
 	/**
 	 * Message for user not found exception.
 	 */
-	private static final String USER_NOT_FOUND_MSG = "User \"%s\" was not found in the database";
+	private static final String NOT_FOUND_MSG = "User \"%s\" was not found in the database";
 
 	/**
 	 * User repository.
 	 */
 	@Autowired
-	AuthUserRepository repo;
+	private AuthUserRepository repo; // NOPMD by skull on 10/11/20, 9:14 AM
 
+	/**
+	 * Role converter.
+	 */
 	@Autowired
-	AuthRoleConverter authRoleConverter;
+	private AuthRoleConverter authRoleConverter; // NOPMD by skull on 10/11/20, 9:14 AM
 
 	@Override
-	public UserDetails loadUserByUsername(String username) {
+	public UserDetails loadUserByUsername(final String username) {
 
-		AuthUser user = null;
+		log.info("Loading user");
+		log.debug("Username: {}", username);
 
-		try {
+		AuthUser user;
 
-			user = repo.findByEmailId(username);
+		user = repo.findByEmailId(username);
 
-			if (user != null && user.getId() != null && !"".equalsIgnoreCase(user.getId().toString())) {
+		if (null == user) {
 
-				return new AuthUserDto(user, authRoleConverter.convertFromRoleList(user.getLinkedRoles()));
-			} else {
+			log.info("User not found");
 
-				throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username));
-			}
-		} catch (Exception e) {
+			throw new UsernameNotFoundException(String.format(NOT_FOUND_MSG, username));
+		} else {
 
-			throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username));
+			log.info("User found");
+
+			return new AuthUserDto(user, authRoleConverter.convertFromRoleList(user.getLinkedRoles()));
 		}
 	}
 }

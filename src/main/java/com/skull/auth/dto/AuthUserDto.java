@@ -29,20 +29,28 @@ public class AuthUserDto extends User {
 	/**
 	 * User's id.
 	 */
-	private String id;
+	private String id; // NOPMD by skull on 10/11/20, 9:01 AM
 
 	/**
 	 * User's name.
 	 */
 	private String name;
 
-	public AuthUserDto(AuthUser userEntity, List<GrantedAuthority> authorizedRoles) {
+	/**
+	 * Public constructor.
+	 * 
+	 * @param userEntity      user entity
+	 * @param authorizedRoles authorized roles
+	 */
+	public AuthUserDto(final AuthUser userEntity, final List<GrantedAuthority> authorizedRoles) {
 
 		super(userEntity.getEmailId(), userEntity.getPassword(), authorizedRoles);
 
 		this.name = userEntity.getName();
 
-		if (null != userEntity.getId())
+		if (null != userEntity.getId()) {
+
 			this.id = userEntity.getId().toString();
+		}
 	}
 }

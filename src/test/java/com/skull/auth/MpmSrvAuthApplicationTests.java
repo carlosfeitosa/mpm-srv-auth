@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.skull.auth.service.CustomUserDetailsService;
 
-@SpringBootTest
+@SpringBootTest(properties = { "service.preload.database=false" })
 class MpmSrvAuthApplicationTests {
 
 	@Autowired

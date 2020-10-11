@@ -40,7 +40,7 @@ public class AuthUser {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "id", updatable = false, nullable = false)
 	@Getter
-	private UUID id;
+	private UUID id; // NOPMD by skull on 10/11/20, 9:06 AM
 
 	/**
 	 * User's name.

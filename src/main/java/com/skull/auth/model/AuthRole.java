@@ -39,7 +39,7 @@ public class AuthRole {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "id", updatable = false, nullable = false)
 	@Getter
-	private UUID id;
+	private UUID id; // NOPMD by skull on 10/11/20, 9:05 AM
 
 	/**
 	 * User's name.
@@ -58,7 +58,7 @@ public class AuthRole {
 	@Getter
 	@Setter
 	private List<AuthPermission> linkedPermissions;
-	
+
 	/**
 	 * User list.
 	 */
@@ -72,7 +72,7 @@ public class AuthRole {
 	 * 
 	 * @param name role name
 	 */
-	public AuthRole(@NonNull String name) {
+	public AuthRole(@NonNull final String name) {
 
 		super();
 
