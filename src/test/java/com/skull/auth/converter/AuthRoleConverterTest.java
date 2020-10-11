@@ -16,12 +16,12 @@ class AuthRoleConverterTest {
 
 	private static final String ROLE_NAME = "ROLE_#%d";
 
-	private static AuthRoleConverter CONVERTER;
+	private static AuthRoleConverter converter;
 
 	@BeforeAll
 	public static void setupBeforeTest() {
 
-		CONVERTER = new AuthRoleConverter();
+		converter = new AuthRoleConverter();
 	}
 
 	@DisplayName("Test if converter can convert a list from entity to dto")
@@ -39,7 +39,7 @@ class AuthRoleConverterTest {
 			roleStringList.add(roleName);
 		}
 
-		List<GrantedAuthority> authorityList = CONVERTER.convertFromRoleList(roleList);
+		List<GrantedAuthority> authorityList = converter.convertFromRoleList(roleList);
 
 		assertThat(authorityList.size()).isEqualTo(roleList.size());
 

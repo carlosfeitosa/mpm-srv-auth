@@ -173,46 +173,89 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 		final List<AuthPermission> projectPerms = getMockedProjectAllPermissionList();
 
+		savePermissions(projectPerms);
+
+		final List<AuthRole> projectRoles = getProjectMockedRoles(projectPerms);
+
+		result.addAll(projectRoles);
+
+		return result;
+	}
+
+	/**
+	 * Return mocked project roles.
+	 * 
+	 * @param projectPerms project permissions
+	 * 
+	 * @return roles list
+	 */
+	private List<AuthRole> getProjectMockedRoles(final List<AuthPermission> projectPerms) {
+
+		final List<AuthPermission> defaultPerms = new ArrayList<>(projectPerms);
+
+		final List<AuthRole> result = new ArrayList<>();
+
+		result.add(getProjectRole(ROLE_ROOT, defaultPerms));
+		result.add(getProjectRole(ROLE_ADMIN, defaultPerms));
+		result.add(getProjectRole(ROLE_PM, defaultPerms));
+		result.add(getProjectRole(ROLE_PMO, defaultPerms));
+
+		final List<AuthPermission> devteamPerms = new ArrayList<>(projectPerms);
+
+		removeProjectUnauthorizedAccessForDevTeamPermission(devteamPerms);
+
+		result.add(getProjectRole(ROLE_DEVTEAM, devteamPerms));
+
+		return result;
+	}
+
+	/**
+	 * Remove unauthorized project access for devteam.
+	 * 
+	 * @param roles default role list
+	 */
+	private void removeProjectUnauthorizedAccessForDevTeamPermission(final List<AuthPermission> permissions) {
+
+		for (final AuthPermission permission : permissions) {
+
+			if (permission.getName() == PERM_VALL_PROJECT) {
+
+				permissions.remove(permission);
+			}
+		}
+	}
+
+	/**
+	 * Return project root role.
+	 * 
+	 * @param projectPerms project permissions
+	 * 
+	 * @return root role
+	 */
+	private AuthRole getProjectRole(final String roleName, final List<AuthPermission> projectPerms) {
+
+		final AuthRole rootRole = new AuthRole(roleName);
+
+		rootRole.setLinkedPermissions(projectPerms);
+
+		return rootRole;
+	}
+
+	/**
+	 * Save permissions.
+	 * 
+	 * @param permissions permissions list
+	 */
+	private void savePermissions(final List<AuthPermission> permissions) {
+
 		log.info("Saving project permissions");
 
-		for (final AuthPermission permission : projectPerms) {
+		for (final AuthPermission permission : permissions) {
 
 			log.debug("Saving \"{}\" profile", permission.getName());
 
 			permissionRepo.save(permission);
 		}
-
-		final List<AuthPermission> rootPerms = new ArrayList<>();
-		final List<AuthPermission> adminPerms = new ArrayList<>();
-		final List<AuthPermission> pmPerms = new ArrayList<>();
-		final List<AuthPermission> pmoPerms = new ArrayList<>();
-		final List<AuthPermission> devteamPerms = new ArrayList<>();
-
-		rootPerms.addAll(projectPerms);
-		adminPerms.addAll(projectPerms);
-		pmPerms.addAll(projectPerms);
-		pmoPerms.addAll(projectPerms);
-		devteamPerms.addAll(projectPerms);
-
-		final AuthRole rootRole = new AuthRole(ROLE_ROOT);
-		final AuthRole adminRole = new AuthRole(ROLE_ADMIN);
-		final AuthRole pmRole = new AuthRole(ROLE_PM);
-		final AuthRole pmoRole = new AuthRole(ROLE_PMO);
-		final AuthRole devteamRole = new AuthRole(ROLE_DEVTEAM);
-
-		rootRole.setLinkedPermissions(rootPerms);
-		adminRole.setLinkedPermissions(pmPerms);
-		pmRole.setLinkedPermissions(pmPerms);
-		pmoRole.setLinkedPermissions(pmoPerms);
-		devteamRole.setLinkedPermissions(devteamPerms);
-
-		result.add(rootRole);
-		result.add(adminRole);
-		result.add(pmRole);
-		result.add(pmoRole);
-		result.add(devteamRole);
-
-		return result;
 	}
 
 	/**
