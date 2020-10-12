@@ -1,6 +1,7 @@
 package com.skull.auth.configuration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,54 +65,69 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 	private static final String MCKD_MASTER_PASS = "s3cr3t";
 
 	/**
+	 * Mocker master user name.
+	 */
+	private static final String MCKD_DEV_NAME = "Devteam";
+
+	/**
+	 * Mocker master user email.
+	 */
+	private static final String MCKD_DEV_EMAIL = "devteam@devteam.com";
+
+	/**
+	 * Mocker master user password.
+	 */
+	private static final String MCKD_DEVTEAM_PASS = "s3cr3t";
+
+	/**
 	 * Root role name.
 	 */
-	private static final String ROLE_ROOT = "ROLE_ROOT";
+	private static final String ROLE_ROOT = "ROOT";
 
 	/**
 	 * Admin role name.
 	 */
-	private static final String ROLE_ADMIN = "ROLE_ADMIN";
+	private static final String ROLE_ADMIN = "ADMIN";
 
 	/**
 	 * Project manager role name.
 	 */
-	private static final String ROLE_PM = "ROLE_PM";
+	private static final String ROLE_PM = "PM";
 
 	/**
 	 * PMO role name.
 	 */
-	private static final String ROLE_PMO = "ROLE_PMO";
+	private static final String ROLE_PMO = "PMO";
 
 	/**
 	 * DevTeam role name.
 	 */
-	private static final String ROLE_DEVTEAM = "ROLE_DEVTEAM";
+	private static final String ROLE_DEVTEAM = "DEVTEAM";
 
 	/**
 	 * Create project permission.
 	 */
-	private static final String PERM_NEW_PROJECT = "PERMISSION_NEW_PROJECT";
+	private static final String PERM_NEW_PROJECT = "PROJECT_NEW";
 
 	/**
 	 * Edit project permission.
 	 */
-	private static final String PERM_EDIT_PROJECT = "PERMISSION_EDIT_PROJECT";
+	private static final String PERM_EDIT_PROJECT = "PROJECT_EDIT";
 
 	/**
 	 * Delete project permission.
 	 */
-	private static final String PERM_DEL_PROJECT = "PERMISSION_DELETE_PROJECT";
+	private static final String PERM_DEL_PROJECT = "PROJECT_DELETE";
 
 	/**
 	 * View all projects permission.
 	 */
-	private static final String PERM_VALL_PROJECT = "PERMISSION_VIEW_ALL_PROJECT";
+	private static final String PERM_VALL_PROJECT = "PROJECT_VIEW_ALL";
 
 	/**
 	 * View project permission.
 	 */
-	private static final String PERM_VIEW_PROJECT = "PERMISSION_VIEW_PROJECT";
+	private static final String PERM_VIEW_PROJECT = "PROJECT_VIEW";
 
 	/**
 	 * Init database with mock data.
@@ -135,10 +151,14 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 				log.info("Preloading database (users)...");
 
 				final AuthUser master = getMockedMasterUser();
-
 				master.setLinkedRoles(allRolesList);
 
 				repository.save(master);
+
+				final AuthUser devteam = getMockedDevteamUser();
+				devteam.setLinkedRoles(Arrays.asList(roleRepo.findByName(ROLE_DEVTEAM)));
+
+				repository.save(devteam);
 			}
 		};
 	}
@@ -218,7 +238,7 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 
 		for (final AuthPermission permission : permissions) {
 
-			if (permission.getName().equals(PERM_VALL_PROJECT)) {
+			if (permission.getName().equals(PERM_VALL_PROJECT)) { // NOPMD by skull on 10/11/20, 9:20 PM
 
 				permissions.remove(permission);
 			}
@@ -288,6 +308,22 @@ public class LoadDatabase { // NOPMD by skull on 8/8/20, 7:07 PM
 		result.setName(MCKD_MASTER_NAME);
 		result.setEmailId(MCKD_MASTER_EMAIL);
 		result.setPassword(encoder.encode(MCKD_MASTER_PASS));
+
+		return result;
+	}
+
+	/**
+	 * Returns a mocker devteam user.
+	 * 
+	 * @return mocked devteam user
+	 */
+	private AuthUser getMockedDevteamUser() {
+
+		final AuthUser result = new AuthUser();
+
+		result.setName(MCKD_DEV_NAME);
+		result.setEmailId(MCKD_DEV_EMAIL);
+		result.setPassword(encoder.encode(MCKD_DEVTEAM_PASS));
 
 		return result;
 	}

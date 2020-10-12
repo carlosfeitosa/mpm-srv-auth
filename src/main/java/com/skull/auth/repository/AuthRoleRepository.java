@@ -17,4 +17,12 @@ import com.skull.auth.model.AuthRole;
 @Repository
 public interface AuthRoleRepository extends JpaRepository<AuthRole, UUID> {
 
+	/**
+	 * Find role by name.
+	 * 
+	 * @param name role name
+	 * 
+	 * @return found role
+	 */
+	AuthRole findByName(String name);
 }

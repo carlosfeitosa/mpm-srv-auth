@@ -24,6 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthRoleConverter { // NOPMD by skull on 10/11/20, 12:32 AM
 
 	/**
+	 * Permission prefix.
+	 */
+	private static final String PERMISSION_PREFIX = "ROLE_";
+
+	/**
 	 * Convert a AuthRole list to GrantedAuthority list.
 	 * 
 	 * @param roles AuthRole entity
@@ -46,8 +51,11 @@ public class AuthRoleConverter { // NOPMD by skull on 10/11/20, 12:32 AM
 
 					log.debug("Recuperando a permissão {}", permission.getName());
 
-					result.add(new SimpleGrantedAuthority(permission.getName())); // NOPMD by skull on 10/11/20, 12:35
-																					// AM
+					result.add(new SimpleGrantedAuthority(PERMISSION_PREFIX.concat(permission.getName()))); // NOPMD by
+																											// skull on
+																											// 10/11/20,
+																											// 12:35
+					// AM
 				}
 			}
 		}
